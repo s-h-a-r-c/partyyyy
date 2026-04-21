@@ -1,0 +1,32 @@
+---
+import { getCollection } from 'astro:content';
+
+interface Props {
+  currentSlug: string;
+}
+const { currentSlug } = Astro.props;
+
+const allPosts = await getCollection('posts');
+const backlinks = allPosts.filter(post => {
+  if (post.id === currentSlug) return false;
+  return post.body?.includes(currentSlug) ?? false;
+});
+---
+
+{backlinks.length > 0 && (
+  <section class="mt-10 pt-8 border-t border-stone-200">
+    <h2 class="text-sm font-semibold text-stone-500 uppercase tracking-wide mb-4">Referenced by</h2>
+    <ul class="space-y-1">
+      {backlinks.map(post => (
+        <li>
+          <a
+            href={`/posts/${post.id}`}
+            class="text-sm text-stone-600 hover:text-stone-900 transition-colors"
+          >
+            ← {post.data.title}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+)}

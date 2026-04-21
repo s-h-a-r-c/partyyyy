@@ -1,0 +1,39 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@theme {
+  --font-sans: "Georgia", "Times New Roman", serif;
+  --color-garden-bg: #fafaf8;
+  --color-garden-surface: #f4f3ef;
+  --color-garden-border: #e8e5de;
+  --color-garden-text: #1a1917;
+  --color-garden-muted: #6b6760;
+}
+
+body {
+  background-color: var(--color-garden-bg);
+  color: var(--color-garden-text);
+  font-family: var(--font-sans);
+}
+
+/* tighten paragraph spacing */
+.prose p {
+  margin-top: 0.75em;
+  margin-bottom: 0.75em;
+}
+
+/* tighten space before lists */
+.prose :is(ul, ol) {
+  margin-top: -0.5em;
+}
+
+/* tighten heading top margins */
+.prose :is(h1, h2, h3, h4) {
+  margin-top: 1.25em;
+  margin-bottom: 0;
+}
+
+/* restore h2 top margin when it follows a subheading */
+.prose :is(h3, h4) + h2 {
+  margin-top: 1.5em;
+}

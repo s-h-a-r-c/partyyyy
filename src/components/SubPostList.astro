@@ -1,0 +1,30 @@
+---
+import { getCollection } from 'astro:content';
+
+interface Props {
+  parentSlug: string;
+}
+const { parentSlug } = Astro.props;
+
+const subPosts = (await getCollection('posts'))
+  .filter(p => p.data.parent === parentSlug)
+  .sort((a, b) => a.data.created.getTime() - b.data.created.getTime());
+---
+
+{subPosts.length > 0 && (
+  <section class="mt-12 pt-8 border-t border-stone-200">
+    <h2 class="text-sm font-semibold text-stone-500 uppercase tracking-wide mb-4">Sections in this series</h2>
+    <ul class="space-y-2">
+      {subPosts.map(post => (
+        <li>
+          <a
+            href={`/posts/${post.id}`}
+            class="flex items-center gap-3 p-3 rounded-lg hover:bg-stone-50 transition-colors border border-transparent hover:border-stone-200 group"
+          >
+            <span class="text-sm text-stone-800 group-hover:text-stone-600">{post.data.title}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+)}

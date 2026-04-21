@@ -1,0 +1,29 @@
+---
+interface Props {
+  slug: string;
+  title: string;
+  description: string;
+  tags: string[];
+  created: Date;
+}
+const { slug, title, description, tags, created } = Astro.props;
+const date = created.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' });
+---
+
+<a
+  href={`/posts/${slug}`}
+  class="block p-5 rounded-xl border border-stone-200 bg-white hover:border-stone-300 hover:shadow-sm transition-all group"
+>
+  <h2 class="text-base font-semibold text-stone-900 group-hover:text-stone-700 leading-snug mb-2">{title}</h2>
+  <p class="text-sm text-stone-500 mb-3 leading-relaxed">{description}</p>
+  <div class="flex items-center justify-between gap-2">
+    <div class="flex flex-wrap gap-1.5">
+      {tags.map(tag => (
+        <span class="text-xs px-2 py-0.5 rounded-full bg-stone-100 text-stone-600 border border-stone-200">
+          {tag}
+        </span>
+      ))}
+    </div>
+    <span class="text-xs text-stone-400 shrink-0">{date}</span>
+  </div>
+</a>

@@ -1,0 +1,74 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import PostCard from '../components/PostCard.astro';
+
+const posts = (await getCollection('posts'))
+  .sort((a, b) => (b.data.updated ?? b.data.created).getTime() - (a.data.updated ?? a.data.created).getTime());
+
+const allTags = [...new Set(posts.flatMap(p => p.data.tags))].sort();
+---
+
+<Base title="partyyyy">
+  <section class="mb-10">
+    <h1 class="text-xl font-bold text-stone-900 mb-1">hi i'm sharlene and i love giving up</h1>
+    <p class="text-sm text-stone-500 mt-3">
+      i gave up on my other blog and made this new one instead
+    </p>
+  </section>
+
+  <!--
+  <div class="flex flex-wrap gap-2 mb-8" id="tag-filters">
+    <button
+      data-tag="all"
+      class="tag-btn inline-flex items-center text-xs px-3 py-1 rounded-full border transition-colors bg-stone-900 text-white border-stone-900"
+    >All</button>
+    {allTags.map(tag => (
+      <button
+        data-tag={tag}
+        class="tag-btn inline-flex items-center text-xs px-3 py-1 rounded-full border transition-colors bg-white text-stone-600 border-stone-200 hover:border-stone-400"
+      >{tag}</button>
+    ))}
+  </div>
+  -->
+
+  <div class="grid gap-3" id="post-grid">
+    {posts.map(post => (
+      <div data-tags={post.data.tags.join(',')}>
+        <PostCard
+          slug={post.id}
+          title={post.data.title}
+          description={post.data.description}
+          tags={post.data.tags}
+          created={post.data.created}
+        />
+      </div>
+    ))}
+    <p class="text-sm text-stone-500 mt-3 text-center">
+      haha that's it
+    </p>
+  </div>
+</Base>
+
+<script>
+const buttons = document.querySelectorAll<HTMLButtonElement>('.tag-btn');
+const cards = document.querySelectorAll<HTMLDivElement>('#post-grid [data-tags]');
+
+buttons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const selected = btn.dataset.tag!;
+
+    buttons.forEach(b => {
+      const active = b.dataset.tag === selected;
+      b.className = active
+        ? 'tag-btn inline-flex items-center text-xs px-3 py-1 rounded-full border transition-colors bg-stone-900 text-white border-stone-900'
+        : 'tag-btn inline-flex items-center text-xs px-3 py-1 rounded-full border transition-colors bg-white text-stone-600 border-stone-200 hover:border-stone-400';
+    });
+
+    cards.forEach(card => {
+      const tags = card.dataset.tags!.split(',');
+      card.style.display = (selected === 'all' || tags.includes(selected)) ? '' : 'none';
+    });
+  });
+});
+</script>
